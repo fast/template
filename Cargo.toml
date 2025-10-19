@@ -25,7 +25,9 @@ repository = "https://github.com/fast/template"
 rust-version = "1.85.0"
 
 [workspace.lints.rust]
+missing_docs = "deny"
 unknown_lints = "deny"
+unused_must_use = "deny"
 
 [workspace.lints.clippy]
 dbg_macro = "deny"

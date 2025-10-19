@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! A template library.
+
+#![cfg_attr(docsrs, feature(doc_cfg))]
+
+/// A placeholder function.
 pub fn hello() {
     println!("Hello, world!");
 }
