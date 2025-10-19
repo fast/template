@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! An xtask binary for managing workspace tasks.
+
 use std::process::Command as StdCommand;
 
 use clap::Parser;
