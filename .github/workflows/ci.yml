@@ -52,11 +52,11 @@ jobs:
     name: Run tests
     strategy:
       matrix:
-        os: [ ubuntu-22.04, macos-14, windows-2022 ]
+        os: [ ubuntu-24.04, macos-14, windows-2022 ]
         rust-version: [ "1.85.0", "stable" ]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: Swatinem/rust-cache@v2
       - name: Delete rust-toolchain.toml
         run: rm rust-toolchain.toml
@@ -70,7 +70,7 @@ jobs:
 
   required:
     name: Required
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     if: ${{ always() }}
     needs:
       - check
