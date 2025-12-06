@@ -18,6 +18,15 @@
 
 Use this repository as a GitHub template to quickly start a new Rust project.
 
+## Getting Started
+
+1. Create a new repository using this template
+2. Clone your repository and run the rename script:
+   - **Linux/macOS:** `./rename-project.sh`
+   - **Windows:** `.\rename-project.ps1`
+3. Follow the prompts, review changes, and commit
+4. Start building your project!
+
 ## Minimum Rust version policy
 
 This crate is built against the latest stable release, and its minimum supported rustc version is 1.85.0.
