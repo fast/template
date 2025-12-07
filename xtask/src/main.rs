@@ -19,6 +19,9 @@ use std::process::Command as StdCommand;
 use clap::Parser;
 use clap::Subcommand;
 
+#[cfg(feature = "bootstrap")]
+mod bootstrap;
+
 #[derive(Parser)]
 struct Command {
     #[clap(subcommand)]
@@ -29,6 +32,7 @@ impl Command {
     fn run(self) {
         match self.sub {
             SubCommand::Build(cmd) => cmd.run(),
+            SubCommand::Bootstrap(cmd) => cmd.run(),
             SubCommand::Lint(cmd) => cmd.run(),
             SubCommand::Test(cmd) => cmd.run(),
         }
@@ -39,6 +43,8 @@ impl Command {
 enum SubCommand {
     #[clap(about = "Compile workspace packages.")]
     Build(CommandBuild),
+    #[clap(about = "Bootstrap a new project from this template.")]
+    Bootstrap(CommandBootstrap),
     #[clap(about = "Run format and clippy checks.")]
     Lint(CommandLint),
     #[clap(about = "Run unit tests.")]
@@ -54,6 +60,33 @@ struct CommandBuild {
 impl CommandBuild {
     fn run(self) {
         run_command(make_build_cmd(self.locked));
+    }
+}
+
+#[derive(Parser)]
+struct CommandBootstrap {
+    #[arg(
+        long,
+        help = "Clean up bootstrap files and disable the bootstrap feature"
+    )]
+    cleanup: bool,
+}
+
+impl CommandBootstrap {
+    fn run(self) {
+        #[cfg(not(feature = "bootstrap"))]
+        {
+            println!("\n⚠️ This project has already been bootstrapped!");
+            return;
+        }
+        #[cfg(feature = "bootstrap")]
+        {
+            if self.cleanup {
+                bootstrap::cleanup_bootstrap();
+            } else {
+                bootstrap::bootstrap_project();
+            }
+        }
     }
 }
 
