@@ -21,9 +21,14 @@ Use this repository as a GitHub template to quickly start a new Rust project.
 ## Getting Started
 
 1. Create a new repository using this template
-2. Clone your repository and run the rename script:
-   - **Linux/macOS:** `./rename-project.sh`
-   - **Windows:** `.\rename-project.ps1`
+2. Clone your repository and run the bootstrap command:
+   ```bash
+   cargo xtask bootstrap
+   ```
+   Or with arguments:
+   ```bash
+   cargo xtask bootstrap --project-name my-project --github-account my-username
+   ```
 3. Follow the prompts, review changes, and commit
 4. Start building your project!
 
