@@ -8,9 +8,9 @@
 
 [crates-badge]: https://img.shields.io/crates/v/${projectName}.svg
 [crates-url]: https://crates.io/crates/${projectName}
-[docs-badge]: https://docs.rs/${projectName}/badge.svg
-[msrv-badge]: https://img.shields.io/badge/MSRV-1.85-green?logo=rust
+[docs-badge]: https://img.shields.io/docsrs/${projectName}
 [docs-url]: https://docs.rs/${projectName}
+[msrv-badge]: https://img.shields.io/badge/MSRV-1.85-green?logo=rust
 [license-badge]: https://img.shields.io/crates/l/${projectName}
 [license-url]: LICENSE
 [actions-badge]: https://github.com/fast/template/workflows/CI/badge.svg
