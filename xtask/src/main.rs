@@ -20,7 +20,6 @@ use std::process::Command as StdCommand;
 use clap::Parser;
 use clap::Subcommand;
 
-#[cfg(feature = "bootstrap")]
 mod bootstrap;
 
 fn workspace_dir() -> &'static Path {
@@ -70,28 +69,13 @@ impl CommandBuild {
 
 #[derive(Parser)]
 struct CommandBootstrap {
-    #[arg(
-        long,
-        help = "Clean up bootstrap files and disable the bootstrap feature"
-    )]
+    #[arg(long, help = "Clean up the bootstrap scaffold.")]
     cleanup: bool,
 }
 
 impl CommandBootstrap {
     fn run(self) {
-        #[cfg(not(feature = "bootstrap"))]
-        {
-            println!("\n⚠️ This project has already been bootstrapped!");
-            return;
-        }
-        #[cfg(feature = "bootstrap")]
-        {
-            if self.cleanup {
-                bootstrap::cleanup_bootstrap();
-            } else {
-                bootstrap::bootstrap_project();
-            }
-        }
+        bootstrap::bootstrap(self.cleanup);
     }
 }
 

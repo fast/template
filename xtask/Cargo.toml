@@ -23,8 +23,6 @@ rust-version.workspace = true
 release = false
 
 [features]
-bootstrap = []
-default = ["bootstrap"]
 
 [dependencies]
 clap = { version = "4.5.49", features = ["derive"] }

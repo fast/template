@@ -18,10 +18,19 @@ use std::path::Path;
 use colored::Colorize;
 use dialoguer::Confirm;
 use dialoguer::Input;
+use toml_edit::DocumentMut;
 
 use super::workspace_dir;
 
-pub fn bootstrap_project() {
+pub fn bootstrap(cleanup: bool) {
+    if cleanup {
+        cleanup_bootstrap();
+    } else {
+        bootstrap_project();
+    }
+}
+
+fn bootstrap_project() {
     println!("\n{}", "🚀 Starting project bootstrap...".yellow().bold());
 
     let project_name = get_valid_input(
@@ -29,7 +38,7 @@ pub fn bootstrap_project() {
         parse_project_name,
     );
     let github_username = get_valid_input(
-        "Enter your GitHub username (e.g., torvalds)",
+        "Enter your GitHub username (e.g., tisonkun)",
         parse_github_username,
     );
 
@@ -59,57 +68,48 @@ pub fn bootstrap_project() {
     );
 }
 
-pub fn cleanup_bootstrap() {
+fn cleanup_bootstrap() {
     println!("\n{}", "🧹 Starting bootstrap cleanup...".yellow().bold());
-    let bootstrap_file = workspace_dir().join("xtask/src/bootstrap.rs");
-    let cargo_toml = workspace_dir().join("xtask/Cargo.toml");
-    remove_bootstrap_file(&bootstrap_file);
-    cleanup_cargo_toml(&cargo_toml).unwrap();
+    remove_ci_workflows();
+    override_bootstrap_file();
+    cleanup_cargo_toml();
     println!("\n{}", "🧹 Bootstrap cleanup complete!".green().bold());
 }
 
-fn remove_bootstrap_file(bootstrap_file: &Path) {
-    if bootstrap_file.exists() {
-        println!("Deleting bootstrap.rs...");
-        std::fs::remove_file(bootstrap_file).unwrap();
+fn remove_ci_workflows() {
+    let workflows_dir = workspace_dir().join(".github/workflows/ci-bootstrap.yml");
+    if workflows_dir.exists() {
+        println!("Removing CI Bootstrap workflows...");
+        std::fs::remove_dir_all(workflows_dir).unwrap();
     } else {
-        println!("{}", "bootstrap.rs already deleted".dimmed());
+        panic!("Broken bootstrap cleanup state: '.github/workflows/ci-bootstrap.yml' not found");
     }
 }
 
-fn cleanup_cargo_toml(cargo_toml_path: &Path) -> Result<(), Box<dyn Error>> {
-    use toml_edit::DocumentMut;
-
-    let content = std::fs::read_to_string(cargo_toml_path)?;
-    let mut doc = content.parse::<DocumentMut>()?;
-
-    disable_bootstrap_feature(&mut doc);
-    remove_bootstrap_dependencies(&mut doc);
-
-    std::fs::write(cargo_toml_path, doc.to_string())?;
-    Ok(())
-}
-
-fn disable_bootstrap_feature(doc: &mut toml_edit::DocumentMut) {
-    if let Some(features) = doc.get_mut("features").and_then(|f| f.as_table_mut()) {
-        println!("Disabling bootstrap feature...");
-        if let Some(default) = features.get_mut("default").and_then(|d| d.as_array_mut()) {
-            let index_to_remove = default
-                .iter()
-                .position(|feature| feature.as_str() == Some("bootstrap"));
-            if let Some(idx) = index_to_remove {
-                default.remove(idx);
-            }
-        }
+fn override_bootstrap_file() {
+    let old_bootstrap_file = workspace_dir().join("xtask/src/bootstrap.rs");
+    let new_bootstrap_file = workspace_dir().join("xtask/src/bootstrap-done.rs");
+    if new_bootstrap_file.exists() {
+        println!("Overriding bootstrap file...");
+        std::fs::rename(new_bootstrap_file, old_bootstrap_file).unwrap();
+    } else {
+        panic!("Broken bootstrap cleanup state: 'bootstrap-done.rs' not found");
     }
 }
 
-fn remove_bootstrap_dependencies(doc: &mut toml_edit::DocumentMut) {
+fn cleanup_cargo_toml() {
+    let cargo_toml = workspace_dir().join("xtask/Cargo.toml");
+
+    let content = std::fs::read_to_string(&cargo_toml).unwrap();
+    let mut doc = content.parse::<DocumentMut>().unwrap();
     if let Some(dependencies) = doc.get_mut("dependencies").and_then(|d| d.as_table_mut()) {
         println!("Removing unnecessary dependencies...");
         dependencies.remove("toml_edit");
         dependencies.remove("colored");
         dependencies.remove("dialoguer");
+        std::fs::write(&cargo_toml, doc.to_string()).unwrap();
+    } else {
+        panic!("Broken bootstrap cleanup state: 'dependencies' section not found");
     }
 }
 
@@ -297,9 +297,9 @@ mod tests {
     #[test]
     fn test_parse_github_username() {
         // valid accounts
-        assert_eq!(parse_github_username("myuser"), Ok("myuser".into()));
+        assert_eq!(parse_github_username("my-user"), Ok("my-user".into()));
         assert_eq!(parse_github_username("my-org"), Ok("my-org".into()));
-        assert_eq!(parse_github_username("  myuser  "), Ok("myuser".into()));
+        assert_eq!(parse_github_username("  my-user  "), Ok("my-user".into()));
 
         // invalid accounts
         assert!(parse_github_username("").is_err());
