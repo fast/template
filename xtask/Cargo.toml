@@ -16,13 +16,6 @@
 name = "x"
 publish = false
 
-edition.workspace = true
-homepage.workspace = true
-license.workspace = true
-readme.workspace = true
-repository.workspace = true
-rust-version.workspace = true
-
 [package.metadata.release]
 release = false
 
