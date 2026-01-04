@@ -69,7 +69,7 @@ impl CommandBuild {
 
 #[derive(Parser)]
 struct CommandBootstrap {
-    #[arg(long, help = "Clean up the bootstrap scaffold.")]
+    #[arg(long, help = "Clean up the bootstrap scaffolding.")]
     cleanup: bool,
 }
 

@@ -21,8 +21,8 @@ Use this repository as a GitHub template to quickly start a new Rust project.
 ## Getting Started
 
 1. Create a new repository using this template;
-2. Clone your repository and run the bootstrap script: `./bootstrap.py`;
-3. Follow the prompts, review changes, and commit;
+2. Clone your repository and run the bootstrap script: `cargo x bootstrap`;
+3. Cleanup the bootstrap scaffolding: `cargo x bootstrap --cleanup`;
 4. Start building your project!
 
 ## Minimum Rust version policy

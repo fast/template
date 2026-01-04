@@ -77,10 +77,10 @@ fn cleanup_bootstrap() {
 }
 
 fn remove_ci_workflows() {
-    let workflows_dir = workspace_dir().join(".github/workflows/ci-bootstrap.yml");
-    if workflows_dir.exists() {
+    let ci_bootstrap = workspace_dir().join(".github/workflows/ci-bootstrap.yml");
+    if ci_bootstrap.exists() {
         println!("Removing CI Bootstrap workflows...");
-        std::fs::remove_dir_all(workflows_dir).unwrap();
+        std::fs::remove_file(ci_bootstrap).unwrap();
     } else {
         panic!("Broken bootstrap cleanup state: '.github/workflows/ci-bootstrap.yml' not found");
     }
