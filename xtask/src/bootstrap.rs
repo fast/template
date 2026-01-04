@@ -14,19 +14,12 @@
 
 use std::error::Error;
 use std::path::Path;
-use std::path::PathBuf;
 
 use colored::Colorize;
 use dialoguer::Confirm;
 use dialoguer::Input;
 
-fn workspace_dir() -> &'static Path {
-    Path::new(env!("CARGO_WORKSPACE_DIR"))
-}
-
-fn workspace_path(relative: &str) -> PathBuf {
-    workspace_dir().join(relative)
-}
+use super::workspace_dir;
 
 pub fn bootstrap_project() {
     println!("\n{}", "🚀 Starting project bootstrap...".yellow().bold());
@@ -68,8 +61,8 @@ pub fn bootstrap_project() {
 
 pub fn cleanup_bootstrap() {
     println!("\n{}", "🧹 Starting bootstrap cleanup...".yellow().bold());
-    let bootstrap_file = workspace_path("xtask/src/bootstrap.rs");
-    let cargo_toml = workspace_path("xtask/Cargo.toml");
+    let bootstrap_file = workspace_dir().join("xtask/src/bootstrap.rs");
+    let cargo_toml = workspace_dir().join("xtask/Cargo.toml");
     remove_bootstrap_file(&bootstrap_file);
     cleanup_cargo_toml(&cargo_toml).unwrap();
     println!("\n{}", "🧹 Bootstrap cleanup complete!".green().bold());
@@ -84,7 +77,7 @@ fn remove_bootstrap_file(bootstrap_file: &Path) {
     }
 }
 
-fn cleanup_cargo_toml(cargo_toml_path: &Path) -> Result<(), Box<dyn std::error::Error>> {
+fn cleanup_cargo_toml(cargo_toml_path: &Path) -> Result<(), Box<dyn Error>> {
     use toml_edit::DocumentMut;
 
     let content = std::fs::read_to_string(cargo_toml_path)?;
@@ -189,7 +182,7 @@ fn execute_bootstrap(project_name: &str, github_username: &str) {
     update_project_dir(project_name);
 }
 
-fn replace_in_file(file: &std::path::Path, old: &str, new: &str) -> Result<(), Box<dyn Error>> {
+fn replace_in_file(file: &Path, old: &str, new: &str) -> Result<(), Box<dyn Error>> {
     let content = std::fs::read_to_string(file)?;
 
     if !content.contains(old) {
@@ -213,7 +206,7 @@ fn print_update_result(result: Result<(), Box<dyn Error>>) {
 }
 
 fn update_readme(project_name: &str, github_username: &str) {
-    let file = workspace_path("README.md");
+    let file = workspace_dir().join("README.md");
     print_task(format!("Updating {}...", file.display()));
     let result = replace_in_file(
         &file,
@@ -225,7 +218,7 @@ fn update_readme(project_name: &str, github_username: &str) {
 }
 
 fn update_root_cargo_toml(project_name: &str, github_username: &str) {
-    let file = workspace_path("Cargo.toml");
+    let file = workspace_dir().join("Cargo.toml");
     print_task(format!("Updating {}...", file.display()));
     let result = replace_in_file(
         &file,
@@ -238,14 +231,14 @@ fn update_root_cargo_toml(project_name: &str, github_username: &str) {
 }
 
 fn update_template_cargo_toml(project_name: &str) {
-    let file = workspace_path("template/Cargo.toml");
+    let file = workspace_dir().join("template/Cargo.toml");
     print_task(format!("Updating {}...", file.display()));
     let result = replace_in_file(&file, "template", project_name);
     print_update_result(result);
 }
 
 fn update_semantic_yml(project_name: &str, github_username: &str) {
-    let file = workspace_path(".github/semantic.yml");
+    let file = workspace_dir().join(".github/semantic.yml");
     print_task(format!("Updating {}...", file.display()));
     let result = replace_in_file(
         &file,
@@ -256,7 +249,7 @@ fn update_semantic_yml(project_name: &str, github_username: &str) {
 }
 
 fn update_cargo_lock(project_name: &str) {
-    let file = workspace_path("Cargo.lock");
+    let file = workspace_dir().join("Cargo.lock");
     print_task(format!("Updating {}...", file.display()));
     let result = replace_in_file(&file, "template", project_name);
     print_update_result(result);

@@ -14,6 +14,7 @@
 
 //! An xtask binary for managing workspace tasks.
 
+use std::path::Path;
 use std::process::Command as StdCommand;
 
 use clap::Parser;
@@ -21,6 +22,10 @@ use clap::Subcommand;
 
 #[cfg(feature = "bootstrap")]
 mod bootstrap;
+
+fn workspace_dir() -> &'static Path {
+    Path::new(env!("CARGO_WORKSPACE_DIR"))
+}
 
 #[derive(Parser)]
 struct Command {
@@ -123,7 +128,7 @@ fn find_command(cmd: &str) -> StdCommand {
     match which::which(cmd) {
         Ok(exe) => {
             let mut cmd = StdCommand::new(exe);
-            cmd.current_dir(env!("CARGO_WORKSPACE_DIR"));
+            cmd.current_dir(workspace_dir());
             cmd
         }
         Err(err) => {
