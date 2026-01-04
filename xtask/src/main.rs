@@ -14,10 +14,17 @@
 
 //! An xtask binary for managing workspace tasks.
 
+use std::path::Path;
 use std::process::Command as StdCommand;
 
 use clap::Parser;
 use clap::Subcommand;
+
+mod bootstrap;
+
+fn workspace_dir() -> &'static Path {
+    Path::new(env!("CARGO_WORKSPACE_DIR"))
+}
 
 #[derive(Parser)]
 struct Command {
@@ -29,6 +36,7 @@ impl Command {
     fn run(self) {
         match self.sub {
             SubCommand::Build(cmd) => cmd.run(),
+            SubCommand::Bootstrap(cmd) => cmd.run(),
             SubCommand::Lint(cmd) => cmd.run(),
             SubCommand::Test(cmd) => cmd.run(),
         }
@@ -39,6 +47,8 @@ impl Command {
 enum SubCommand {
     #[clap(about = "Compile workspace packages.")]
     Build(CommandBuild),
+    #[clap(about = "Bootstrap a new project from this template.")]
+    Bootstrap(CommandBootstrap),
     #[clap(about = "Run format and clippy checks.")]
     Lint(CommandLint),
     #[clap(about = "Run unit tests.")]
@@ -54,6 +64,18 @@ struct CommandBuild {
 impl CommandBuild {
     fn run(self) {
         run_command(make_build_cmd(self.locked));
+    }
+}
+
+#[derive(Parser)]
+struct CommandBootstrap {
+    #[arg(long, help = "Clean up the bootstrap scaffolding.")]
+    cleanup: bool,
+}
+
+impl CommandBootstrap {
+    fn run(self) {
+        bootstrap::bootstrap(self.cleanup);
     }
 }
 
@@ -90,7 +112,7 @@ fn find_command(cmd: &str) -> StdCommand {
     match which::which(cmd) {
         Ok(exe) => {
             let mut cmd = StdCommand::new(exe);
-            cmd.current_dir(env!("CARGO_WORKSPACE_DIR"));
+            cmd.current_dir(workspace_dir());
             cmd
         }
         Err(err) => {

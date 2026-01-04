@@ -12,12 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! A template library.
-
-#![cfg_attr(docsrs, feature(doc_cfg))]
-#![deny(missing_docs)]
-
-/// A placeholder function.
-pub fn hello() {
-    println!("Hello, world!");
+pub fn bootstrap(_cleanup: bool) {
+    println!("\nThis project has already been bootstrapped!");
 }
