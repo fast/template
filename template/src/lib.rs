@@ -15,6 +15,7 @@
 //! A template library.
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![deny(missing_docs)]
 
 /// A placeholder function.
 pub fn hello() {
