@@ -16,6 +16,9 @@
 name = "x"
 publish = false
 
+edition.workspace = true
+rust-version.workspace = true
+
 [package.metadata.release]
 release = false
 
