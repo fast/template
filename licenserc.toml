@@ -14,7 +14,7 @@
 
 headerPath = "Apache-2.0.txt"
 
-includes = ['**/*.proto', '**/*.rs', '**/*.yml', '**/*.yaml', '**/*.toml']
+includes = ['**/*.rs', '**/*.yml', '**/*.yaml', '**/*.toml']
 
 [properties]
 copyrightOwner = "FastLabs Developers"
