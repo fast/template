@@ -22,11 +22,28 @@ use clap::Subcommand;
 
 mod bootstrap;
 
+const COMMAND_AFTER_HELP: &str = "\
+Agent hint: use `cargo x` for repository workflows. Inspect
+`cargo x <command> --help` before invoking tools directly.
+";
+
+const LINT_AFTER_HELP: &str = "\
+Agent hint:
+  check: cargo x lint
+  fix:   cargo x lint --fix
+Runs rustfmt, clippy, taplo, typos, and hawkeye.
+";
+
 fn workspace_dir() -> &'static Path {
     Path::new(env!("CARGO_WORKSPACE_DIR"))
 }
 
 #[derive(Parser)]
+#[clap(
+    about = "Run repository tasks.",
+    after_help = COMMAND_AFTER_HELP,
+    arg_required_else_help = true
+)]
 struct Command {
     #[clap(subcommand)]
     sub: SubCommand,
@@ -45,13 +62,13 @@ impl Command {
 
 #[derive(Subcommand)]
 enum SubCommand {
-    #[clap(about = "Compile workspace packages.")]
+    #[clap(about = "Compile all workspace targets.")]
     Build(CommandBuild),
     #[clap(about = "Bootstrap a new project from this template.")]
     Bootstrap(CommandBootstrap),
-    #[clap(about = "Run format and clippy checks.")]
+    #[clap(about = "Run workspace quality checks.", after_help = LINT_AFTER_HELP)]
     Lint(CommandLint),
-    #[clap(about = "Run unit tests.")]
+    #[clap(about = "Run workspace unit tests.")]
     Test(CommandTest),
 }
 
@@ -94,7 +111,7 @@ impl CommandTest {
 #[derive(Parser)]
 #[clap(name = "lint")]
 struct CommandLint {
-    #[arg(long, help = "Automatically apply lint suggestions.")]
+    #[arg(long, help = "Automatically apply available lint and format fixes.")]
     fix: bool,
 }
 
