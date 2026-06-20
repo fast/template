@@ -27,6 +27,7 @@ fn workspace_dir() -> &'static Path {
 }
 
 #[derive(Parser)]
+#[clap(about = "Run repository tasks.")]
 struct Command {
     #[clap(subcommand)]
     sub: SubCommand,
@@ -45,13 +46,13 @@ impl Command {
 
 #[derive(Subcommand)]
 enum SubCommand {
-    #[clap(about = "Compile workspace packages.")]
+    #[clap(about = "Compile all workspace targets.")]
     Build(CommandBuild),
     #[clap(about = "Bootstrap a new project from this template.")]
     Bootstrap(CommandBootstrap),
-    #[clap(about = "Run format and clippy checks.")]
+    #[clap(about = "Run workspace quality checks.")]
     Lint(CommandLint),
-    #[clap(about = "Run unit tests.")]
+    #[clap(about = "Run workspace unit tests.")]
     Test(CommandTest),
 }
 
@@ -94,7 +95,7 @@ impl CommandTest {
 #[derive(Parser)]
 #[clap(name = "lint")]
 struct CommandLint {
-    #[arg(long, help = "Automatically apply lint suggestions.")]
+    #[arg(long, help = "Automatically apply available lint and format fixes.")]
     fix: bool,
 }
 
