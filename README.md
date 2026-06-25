@@ -12,7 +12,7 @@
 [docs-url]: https://docs.rs/${projectName}
 [msrv-badge]: https://img.shields.io/badge/MSRV-1.85-green?logo=rust
 [license-badge]: https://img.shields.io/crates/l/${projectName}
-[license-url]: [LICENSE](https://www.apache.org/licenses/LICENSE-2.0)
+[license-url]: https://www.apache.org/licenses/LICENSE-2.0
 [actions-badge]: https://github.com/fast/template/workflows/CI/badge.svg
 [actions-url]: https://github.com/fast/template/actions?query=workflow%3ACI
 
