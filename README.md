@@ -13,8 +13,8 @@
 [msrv-badge]: https://img.shields.io/badge/MSRV-1.85-green?logo=rust
 [license-badge]: https://img.shields.io/crates/l/${projectName}
 [license-url]: https://www.apache.org/licenses/LICENSE-2.0
-[actions-badge]: https://github.com/fast/template/workflows/CI/badge.svg
-[actions-url]: https://github.com/fast/template/actions?query=workflow%3ACI
+[actions-badge]: https://github.com/fast/template/actions/workflows/ci.yml/badge.svg
+[actions-url]: https://github.com/fast/template/actions/workflows/ci.yml
 
 Use this repository as a GitHub template to quickly start a new Rust project.
 
@@ -22,7 +22,7 @@ Use this repository as a GitHub template to quickly start a new Rust project.
 
 1. Create a new repository using this template;
 2. Clone your repository and run the bootstrap script: `cargo x bootstrap`;
-3. Cleanup the bootstrap scaffolding: `cargo x bootstrap --cleanup`;
+3. Clean up the bootstrap scaffolding: `cargo x bootstrap --cleanup`;
 4. Start building your project!
 
 ## Minimum Rust version policy
