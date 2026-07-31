@@ -14,6 +14,7 @@
 
 //! An xtask binary for managing workspace tasks.
 
+use std::io::Write;
 use std::path::Path;
 use std::process::Command as StdCommand;
 
@@ -50,7 +51,7 @@ enum SubCommand {
     Build(CommandBuild),
     #[clap(about = "Bootstrap a new project from this template.")]
     Bootstrap(CommandBootstrap),
-    #[clap(about = "Run workspace quality checks.")]
+    #[clap(about = "Run code quality and API compatibility checks.")]
     Lint(CommandLint),
     #[clap(about = "Run workspace unit tests.")]
     Test(CommandTest),
@@ -106,6 +107,8 @@ impl CommandLint {
         run_command(make_taplo_cmd(self.fix));
         run_command(make_typos_cmd());
         run_command(make_hawkeye_cmd(self.fix));
+        run_command(make_doc_cmd());
+        run_semver_check();
     }
 }
 
@@ -134,6 +137,23 @@ fn run_command(mut cmd: StdCommand) {
     println!("{cmd:?}");
     let status = cmd.status().expect("failed to execute process");
     assert!(status.success(), "command failed: {status}");
+}
+
+fn run_semver_check() {
+    let mut cmd = make_semver_check_cmd();
+    println!("{cmd:?}");
+    let output = cmd.output().expect("failed to execute cargo-semver-checks");
+
+    if !output.status.success()
+        && String::from_utf8_lossy(&output.stderr).contains("No available baseline versions for")
+    {
+        println!("No published baseline found; skipping semver checks.");
+        return;
+    }
+
+    std::io::stdout().write_all(&output.stdout).unwrap();
+    std::io::stderr().write_all(&output.stderr).unwrap();
+    assert!(output.status.success(), "command failed: {}", output.status);
 }
 
 fn make_build_cmd(locked: bool) -> StdCommand {
@@ -189,6 +209,33 @@ fn make_clippy_cmd(fix: bool) -> StdCommand {
     } else {
         cmd.args(["--", "-D", "warnings"]);
     }
+    cmd
+}
+
+fn make_doc_cmd() -> StdCommand {
+    let mut cmd = find_command("cargo");
+    cmd.env("RUSTDOCFLAGS", "-D warnings --cfg docsrs");
+    cmd.args([
+        "+nightly",
+        "doc",
+        "--workspace",
+        "--all-features",
+        "--no-deps",
+    ]);
+    cmd
+}
+
+fn make_semver_check_cmd() -> StdCommand {
+    ensure_installed("cargo-semver-checks", "cargo-semver-checks");
+    let mut cmd = find_command("cargo");
+    // cargo-semver-checks supports selected rustdoc JSON versions, not a rolling nightly format.
+    cmd.args([
+        "+stable",
+        "semver-checks",
+        "check-release",
+        "--workspace",
+        "--all-features",
+    ]);
     cmd
 }
 

@@ -19,6 +19,9 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.number || github.run_id }}
   cancel-in-progress: true
@@ -27,12 +30,13 @@ jobs:
   bootstrap:
     name: Bootstrap
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - name: Install toolchain
         uses: dtolnay/rust-toolchain@nightly
       - uses: Swatinem/rust-cache@v2
       - name: Bootstrap cleanup
-        run: cargo x bootstrap --cleanup
+        run: cargo +nightly x bootstrap --cleanup
       - name: Bootstrap cleanup (After)
-        run: cargo x bootstrap --cleanup
+        run: cargo +nightly x bootstrap --cleanup

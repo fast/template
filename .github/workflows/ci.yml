@@ -19,6 +19,9 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 # Concurrency strategy:
 #   github.workflow: distinguish this workflow from others
 #   github.event_name: distinguish `push` event from `pull_request` event
@@ -36,21 +39,25 @@ jobs:
   check:
     name: Check
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
-      - name: Install toolchain
+      - name: Install nightly toolchain
         uses: dtolnay/rust-toolchain@nightly
         with:
           components: rustfmt,clippy
+      - name: Install stable toolchain
+        uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@v2
         with:
-          tool: typos-cli,taplo-cli,hawkeye
-      - run: cargo x lint
+          tool: typos-cli,taplo-cli,hawkeye,cargo-semver-checks
+      - run: cargo +nightly x lint
 
   msrv:
     name: Resolve MSRV
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     outputs:
       rust-versions: ${{ steps.metadata.outputs.rust-versions }}
     steps:
@@ -65,10 +72,12 @@ jobs:
     name: Run tests
     needs: msrv
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-24.04, macos-14, windows-2022 ]
         rust-version: ${{ fromJson(needs.msrv.outputs.rust-versions) }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: Swatinem/rust-cache@v2
@@ -85,6 +94,7 @@ jobs:
   required:
     name: Required
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     if: ${{ always() }}
     needs:
       - check
