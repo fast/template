@@ -50,7 +50,7 @@ enum SubCommand {
     Build(CommandBuild),
     #[clap(about = "Bootstrap a new project from this template.")]
     Bootstrap(CommandBootstrap),
-    #[clap(about = "Run code quality and documentation checks.")]
+    #[clap(about = "Run workspace quality checks.")]
     Lint(CommandLint),
     #[clap(about = "Run workspace unit tests.")]
     Test(CommandTest),

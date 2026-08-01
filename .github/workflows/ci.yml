@@ -19,9 +19,6 @@ on:
   push:
     branches: [ main ]
 
-permissions:
-  contents: read
-
 # Concurrency strategy:
 #   github.workflow: distinguish this workflow from others
 #   github.event_name: distinguish `push` event from `pull_request` event
@@ -50,7 +47,7 @@ jobs:
       - uses: taiki-e/install-action@v2
         with:
           tool: typos-cli,taplo-cli,hawkeye
-      - run: cargo +nightly x lint
+      - run: cargo x lint
 
   msrv:
     name: Resolve MSRV

@@ -19,9 +19,6 @@ on:
   push:
     branches: [ main ]
 
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.number || github.run_id }}
   cancel-in-progress: true
@@ -37,6 +34,6 @@ jobs:
         uses: dtolnay/rust-toolchain@nightly
       - uses: Swatinem/rust-cache@v2
       - name: Bootstrap cleanup
-        run: cargo +nightly x bootstrap --cleanup
+        run: cargo x bootstrap --cleanup
       - name: Bootstrap cleanup (After)
-        run: cargo +nightly x bootstrap --cleanup
+        run: cargo x bootstrap --cleanup
