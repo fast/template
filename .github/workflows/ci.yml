@@ -36,9 +36,10 @@ jobs:
   check:
     name: Check
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
-      - name: Install toolchain
+      - name: Install nightly toolchain
         uses: dtolnay/rust-toolchain@nightly
         with:
           components: rustfmt,clippy
@@ -51,6 +52,7 @@ jobs:
   msrv:
     name: Resolve MSRV
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     outputs:
       rust-versions: ${{ steps.metadata.outputs.rust-versions }}
     steps:
@@ -65,10 +67,12 @@ jobs:
     name: Run tests
     needs: msrv
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-24.04, macos-14, windows-2022 ]
         rust-version: ${{ fromJson(needs.msrv.outputs.rust-versions) }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: Swatinem/rust-cache@v2
@@ -85,6 +89,7 @@ jobs:
   required:
     name: Required
     runs-on: ubuntu-24.04
+    timeout-minutes: 30
     if: ${{ always() }}
     needs:
       - check
