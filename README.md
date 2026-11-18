@@ -13,3 +13,9 @@ Choose the simplest layout that fits this project. Use project-specific metadata
 Create a buildable crate and a README with the commands for local development.
 Configure CI to check formatting, run Clippy, and run the tests. Run those checks locally.
 ```
+
+To use the original Rust template, clone the `legacy` branch:
+
+```sh
+git clone --branch legacy --single-branch https://github.com/fast/template.git
+```
