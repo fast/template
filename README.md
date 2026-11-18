@@ -1,36 +1,15 @@
-# Fast template for developing a new Rust project
+# Rust project starter
 
-[![Crates.io][crates-badge]][crates-url]
-[![Documentation][docs-badge]][docs-url]
-[![MSRV 1.85][msrv-badge]](https://www.whatrustisit.com)
-[![Apache 2.0 licensed][license-badge]][license-url]
-[![Build Status][actions-badge]][actions-url]
+This template is retired. To start a Rust project, fill in the first line of the prompt below and paste it into your coding agent in the new repository.
 
-[crates-badge]: https://img.shields.io/crates/v/${projectName}.svg
-[crates-url]: https://crates.io/crates/${projectName}
-[docs-badge]: https://img.shields.io/docsrs/${projectName}
-[docs-url]: https://docs.rs/${projectName}
-[msrv-badge]: https://img.shields.io/badge/MSRV-1.85-green?logo=rust
-[license-badge]: https://img.shields.io/crates/l/${projectName}
-[license-url]: https://www.apache.org/licenses/LICENSE-2.0
-[actions-badge]: https://github.com/fast/template/actions/workflows/ci.yml/badge.svg
-[actions-url]: https://github.com/fast/template/actions/workflows/ci.yml
+```text
+Set up <project-name> in this repository as a Rust <library or binary> that <purpose>.
 
-Use this repository as a GitHub template to quickly start a new Rust project.
+Use these projects as references for Cargo layout, xtask commands, and CI:
+- Apache DataSketches Rust: https://github.com/apache/datasketches-rust
+- Apache Asyncband: https://github.com/apache/asyncband
 
-## Getting Started
-
-1. Create a new repository using this template;
-2. Clone your repository and run the bootstrap script: `cargo x bootstrap`;
-3. Clean up the bootstrap scaffolding: `cargo x bootstrap --cleanup`;
-4. Start building your project!
-
-## Minimum Rust version policy
-
-This crate's minimum supported `rustc` version is `1.85.0`.
-
-The current policy is that the minimum Rust version required to use this crate can be increased in minor version updates. For example, if `crate 1.0` requires Rust 1.85.0, then `crate 1.0.z` for all values of `z` will also require Rust 1.85.0 or newer. However, `crate 1.y` for `y > 0` may require a newer minimum version of Rust.
-
-## License
-
-This project is licensed under [Apache License, Version 2.0][license-url].
+Choose the simplest layout that fits this project. Use project-specific metadata and dependencies.
+Create a buildable crate and a README with the commands for local development.
+Configure CI to check formatting, run Clippy, and run the tests. Run those checks locally.
+```
